@@ -72,13 +72,33 @@
   $$\hat{y} = \mathbf{w}_2^T \mathbf{h} \in \mathbb{R} \quad \text{where } \mathbf{w}_2 \in \mathbb{R}^k$$
   $$\mathcal{L} = \frac{1}{2}(\hat{y} - y)^2$$
 
-* **b. Chain Rule Derivatives & SGD Updates:**
-  Output error signal: $\delta_{\text{out}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} = (\hat{y} - y)$.
-  $$\frac{\partial \mathcal{L}}{\partial \mathbf{w}_2} = \delta_{\text{out}} \mathbf{h} = (\hat{y} - y) g_1(W_1^T \mathbf{x}) \in \mathbb{R}^k$$
-  Hidden error signal: $\boldsymbol{\delta}_{\text{hidden}} = \delta_{\text{out}} \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \in \mathbb{R}^k$.
-  $$\frac{\partial \mathcal{L}}{\partial W_1} = \mathbf{x} \boldsymbol{\delta}_{\text{hidden}}^T = \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \right]^T \in \mathbb{R}^{d \times k}$$
-  SGD Updates:
-  $$\mathbf{w}_2 \leftarrow \mathbf{w}_2 - \eta \frac{\partial \mathcal{L}}{\partial \mathbf{w}_2}, \quad W_1 \leftarrow W_1 - \eta \frac{\partial \mathcal{L}}{\partial W_1}$$
+* **b. Chain Rule Derivatives & SGD Weight Updates:**
+  
+  #### 1. Output Layer Weight Gradient ($\frac{\partial \mathcal{L}}{\partial \mathbf{w}_2}$):
+  By chain rule for component $w_{2, j}$ ($j=1,\dots,k$):
+  $$\frac{\partial \mathcal{L}}{\partial w_{2, j}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial w_{2, j}}$$
+  * Output error signal: $\delta_{\text{out}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} = \frac{\partial}{\partial \hat{y}} \left[ \frac{1}{2}(\hat{y} - y)^2 \right] = (\hat{y} - y) \in \mathbb{R}$.
+  * Prediction derivative: $\frac{\partial \hat{y}}{\partial w_{2, j}} = \frac{\partial}{\partial w_{2, j}} \left( \sum_{i=1}^k w_{2, i} h_i \right) = h_j$.
+  * Vector gradient:
+    $$\frac{\partial \mathcal{L}}{\partial \mathbf{w}_2} = (\hat{y} - y) \mathbf{h} = \delta_{\text{out}} \mathbf{h} \in \mathbb{R}^k$$
+
+  #### 2. Hidden Layer Weight Matrix Gradient ($\frac{\partial \mathcal{L}}{\partial W_1}$):
+  For weight element $W_{1, m, j}$ connecting input feature $x_m$ to hidden neuron $j$:
+  $$\frac{\partial \mathcal{L}}{\partial W_{1, m, j}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial h_j} \cdot \frac{\partial h_j}{\partial z_j^{(1)}} \cdot \frac{\partial z_j^{(1)}}{\partial W_{1, m, j}}$$
+  * Factor 1 (Output Error): $\frac{\partial \mathcal{L}}{\partial \hat{y}} = (\hat{y} - y)$.
+  * Factor 2 (Output w.r.t. Hidden Activation): $\frac{\partial \hat{y}}{\partial h_j} = w_{2, j}$.
+  * Factor 3 (Activation Derivative): $\frac{\partial h_j}{\partial z_j^{(1)}} = g_1'(z_j^{(1)})$.
+  * Factor 4 (Pre-activation w.r.t. Weight): $\frac{\partial z_j^{(1)}}{\partial W_{1, m, j}} = x_m$.
+
+  Combining Factors 1, 2, and 3 yields the backpropagated error signal for hidden neuron $j$:
+  $$\delta_j^{(1)} \equiv \frac{\partial \mathcal{L}}{\partial z_j^{(1)}} = (\hat{y} - y) w_{2, j} g_1'(z_j^{(1)}) \implies \boldsymbol{\delta}^{(1)} = (\hat{y} - y) \mathbf{w}_2 \odot g_1'(\mathbf{z}^{(1)}) \in \mathbb{R}^k$$
+
+  Multiplying by Factor 4 ($x_m$) gives matrix outer product representation:
+  $$\frac{\partial \mathcal{L}}{\partial W_1} = \mathbf{x} (\boldsymbol{\delta}^{(1)})^T = \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \right]^T \in \mathbb{R}^{d \times k}$$
+
+  #### 3. SGD Weight Updates:
+  $$\mathbf{w}_2^{(t+1)} = \mathbf{w}_2^{(t)} - \eta \frac{\partial \mathcal{L}}{\partial \mathbf{w}_2} = \mathbf{w}_2^{(t)} - \eta (\hat{y} - y) \mathbf{h}$$
+  $$W_1^{(t+1)} = W_1^{(t)} - \eta \frac{\partial \mathcal{L}}{\partial W_1} = W_1^{(t)} - \eta \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2^{(t)} \odot g_1'(W_1^{(t)T} \mathbf{x}) \right]^T$$
 
 * **c. Multi-Task MLP ($y_1 \in \mathbb{R}, y_2 \in \{+1, -1\}$):**
   * **Architecture:** Shared hidden layer $\mathbf{h} = g_1(W_1^T \mathbf{x}) \in \mathbb{R}^k$. Output 1 (regression): $\hat{y}_1 = \mathbf{w}_{\text{out1}}^T \mathbf{h}$. Output 2 (classification): $\hat{y}_2 = \sigma(\mathbf{w}_{\text{out2}}^T \mathbf{h})$.
