@@ -1,6 +1,6 @@
 # Bar-Ilan University Machine Learning (89-511) Study Workspace
 
-This repository contains the interactive exam simulator skill, past exam archives, practice sessions, and course references for **Bar-Ilan University Machine Learning (89-511)**, taught by Prof. Gal Chechik & Prof. Joseph Keshet.
+This repository contains the interactive exam simulator skill, past exam archives, practice sessions, and course references for **Bar-Ilan University Machine Learning (89-511)**.
 
 ---
 
@@ -24,7 +24,7 @@ This repository contains the interactive exam simulator skill, past exam archive
 ## 📁 Repository Structure
 
 ```
-C:\Users\thomy\University\ML/
+./
 ├── .agents/
 │   └── skills/
 │       └── biu-ml-exam-practice/
