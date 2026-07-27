@@ -105,11 +105,38 @@ $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \nabla_{\mathbf{w}} L\left(\mathb
 
 where $\eta > 0$ is the learning rate.
 
-- **Batch Gradient Descent (GD):** Computes the true gradient using the _entire_ dataset simultaneously. It provides stable updates but is computationally heavy for massive datasets.
+### 4.1 Gradient Descent Variants & Update Mechanics
+
+1. **Batch Gradient Descent (BGD):** Computes the exact gradient over the *entire* dataset of size $n$ simultaneously:
+   $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \cdot \frac{1}{n}\sum_{i=1}^n \nabla \mathcal{L}_i(\mathbf{w}^{(t)})$$
+   *Pros:* Guaranteed smooth monotonic convergence on convex functions.  
+   *Cons:* Computationally prohibitive for large datasets ($\mathcal{O}(nd)$ per step).
+
+2. **Stochastic Gradient Descent (SGD):** Approximates the gradient using a single randomly sampled observation $(\mathbf{x}_i, y_i)$ sampled uniformly $i \sim U(1, n)$ at each step:
+   $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta^{(t)} \nabla \mathcal{L}_i(\mathbf{w}^{(t)})$$
+   *For Mean Squared Error (MSE):*
+   $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta^{(t)} \cdot 2\left( \left(\mathbf{w}^{(t)}\right)^T \mathbf{x}_i - y_i \right)\mathbf{x}_i$$
+   *Pros:* Extremely fast update cost ($\mathcal{O}(d)$ per step - **2025 Moed A**); stochastic noise helps escape shallow local minima.
+
+3. **Mini-Batch SGD:** Compromise that samples a small subset $\mathcal{B} \subset \{1, \dots, n\}$ of size $b = |\mathcal{B}|$ (typically $b \in [32, 256]$):
+   $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \cdot \frac{1}{b}\sum_{i \in \mathcal{B}} \nabla \mathcal{L}_i(\mathbf{w}^{(t)})$$
+   Leverages matrix GPU acceleration while reducing single-sample variance.
+
+---
+
+### 4.2 Theoretical Properties of SGD
+
+*   **Unbiased Estimator Property:**  
+    The stochastic gradient derived from a single uniformly sampled instance is an **unbiased estimator** of the true full-batch gradient:
+    $$\mathbb{E}_{i \sim U(1, n)}\left[ \nabla \mathcal{L}_i(\mathbf{w}) \right] = \sum_{i=1}^n P(i) \nabla \mathcal{L}_i(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \nabla \mathcal{L}_i(\mathbf{w}) = \nabla \mathcal{L}(\mathbf{w})$$
+
+*   **Variance & The Robbins-Monro Convergence Conditions:**  
+    Because single-sample updates introduce variance ($\text{Var}(\nabla \mathcal{L}_i) > 0$), SGD with a constant learning rate $\eta$ does *not* converge to a stationary point; instead, it oscillates in a noise ball around the minimum. To guarantee asymptotic convergence to the exact global minimum, the learning rate sequence $\eta^{(t)}$ must satisfy the **Robbins-Monro Conditions**:
     
-- **Stochastic Gradient Descent (SGD):** Approximates the true gradient using a _single random sample_ $(\mathbf{x}_i, y_i)$ per step. This dramatically reduces the computation per update from $\mathcal{O}(nd)$ to $\mathcal{O}(d)$ (**2025 Moed A**).
+    $$\sum_{t=1}^\infty \eta^{(t)} = \infty \quad \text{(Learning rate sum must be infinite to reach any point in space)}$$
+    $$\sum_{t=1}^\infty \left(\eta^{(t)}\right)^2 < \infty \quad \text{(Square sum must be finite to dampen gradient variance to zero)}$$
     
-    $$\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta^{(t)} \cdot 2\left( \left(\mathbf{w}^{(t)}\right)^T \mathbf{x}_i - y_i \right)\mathbf{x}_i$$
+    *Common Schedules:* Inverse time decay $\eta^{(t)} = \frac{\eta_0}{1 + \alpha t}$ or step decay $\eta^{(t)} = \eta_0 \cdot \gamma^{\lfloor t / k \rfloor}$.
     
 
 ## 5. Python / NumPy Implementation Snippet

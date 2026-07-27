@@ -5,59 +5,96 @@
 
 ---
 
-## Question 1: Softmax Cross-Entropy Loss Gradient Derivation
-## שאלה 1: גזירת פונקציית הפסד Softmax Cross-Entropy
+## 🔹 Part A: True/False Questions / חלק א': שאלות נכון/לא נכון
 
-### Case 1 ($m = y$) / מקרה 1
-*Derive gradient w.r.t. target class weights $\mathbf{w}_y$ / גזרי עבור $\mathbf{w}_y$:*
+### Question 1: Overfitting Reduction / שאלה 1
+* **a.** [Yes / No] — *Reasoning / נימוק:*
+* **b.** [Yes / No] — *Reasoning / נימוק:*
+* **c.** [Yes / No] — *Reasoning / נימוק:*
+* **d.** [Yes / No] — *Reasoning / נימוק:*
 
-```text
-
-```
-
-### Case 2 ($m \neq y$) / מקרה 2
-*Derive gradient w.r.t. non-target class weights $\mathbf{w}_m$ / גזרי עבור $\mathbf{w}_m$:*
-
-```text
-
-```
-
-### Unified Vector Gradient Formula / נוסחה מאוחדת
-*State final unified formula / נוסחה מאוחדת:*
-
-```text
-
-```
+### Question 2: Core Principles / שאלה 2
+* **a.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **b.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **c.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **d.** [Correct / Wrong] — *Reasoning / נימוק:*
 
 ---
 
-## Question 2: Decision Tree Information Gain & Entropy
-## שאלה 2: עצי החלטה, אנטרופיה ורווח מידע (Information Gain)
+## 🔹 Part B: Open Questions / חלק ב': שאלות פתוחות
 
-### 1. Parent Entropy $H(S)$ / אנטרופיית הורה
-*Show formula and value in bits / חישוב בביטים:*
+### Question 3: Linear Classifiers & MAP Logistic Regression / שאלה 3
+* **a.** Binary logistic regression formulation, loss function, & rationale:
+For logistic regression optimizing the likelihood is the same as minimizing the log likelihood, therefore we write it as such:
+$$
+\displaylines{
+let: \\
+y_{i} \in \Set{ -1,1 } \text{ be a label for the true data}\\
+\hat{y} \in \Set{ -1,1 } \text{ predictions made by the model}\\
+x_{i}\in \mathbb{R}^{d} \text{ the data that comes with the label as } (x_{i}, y_{i})\\
+w \text{The weight vector}\\
+\text{The negative log likelyhood is equivalent to the probability of getting a wrong answer}\\
+\mathcal{L}_{NLL} = -\ln(L(x))
+}
+$$
 
-```text
+* **b.** SGD derivation, gradient simplification, & learning rate selection:
+ $$
+ \displaylines{
+ \left[ \sum_{i=1}^n \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right) \right]^{'} = \sum_{i=1}^n \left[  \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right) \right]^{'}  = \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \cdot \ln \left( (1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i})^{'} \right) =\\
+ \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \cdot \ln \left( (1)' + (e^{-y_i \mathbf{w}^T \mathbf{x}_i})^{'} \right) = \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \cdot \ln \left(  -y_i x_{i}e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right) =\\
+ 
+ }
+ $$
+* **c.** MAP formulation with Gaussian prior $\mathcal{N}(0,1)$, new SGD update, & $L_2$ regularization effect:
+  ```text
+  
+  ```
 
-```
+---
 
-### 2. Child Entropies $H(S_1), H(S_2)$ / אנטרופיות ילדים
-*Show values for $S_1$ and $S_2$ / חישוב עבור $S_1$ ו-$S_2$:*
+### Question 4: Large Margin & 1-NN Network Equivalence / שאלה 4
+* **a.** Kernel SVM prediction formula via $K$ vs $\Phi$ & complexity analysis:
+  ```text
+  
+  ```
+* **b.** 2-layer network structure & Kernel SVM equivalence proof:
+  ```text
+  
+  ```
+* **c.** RBF kernel parameter selection for 1-NN classification equivalence:
+  ```text
+  
+  ```
 
-```text
+---
 
-```
+### Question 5: Deep Networks & Multi-Output Architecture / שאלה 5
+* **a.** 1-hidden-layer MLP forward pass mathematical formula:
+  ```text
+  
+  ```
+* **b.** Chain rule derivatives $\frac{\partial l}{\partial \mathbf{w}_2}, \frac{\partial l}{\partial W_1}$ & SGD updates:
+  ```text
+  
+  ```
+* **c.** Multi-task architecture (regression $y_1$ + classification $y_2$), joint loss, & backprop update:
+  ```text
+  
+  ```
 
-### 3. Weighted Conditional Entropy $H(S \mid A)$ / אנטרופיה מותנית משוקללת
-*Show calculation / חישוב מותנה:*
+---
 
-```text
-
-```
-
-### 4. Information Gain $\text{IG}(S, A)$ / רווח מידע
-*Final Information Gain value / רווח מידע סופי:*
-
-```text
-
-```
+### Question 6: Unsupervised Learning & PCA / שאלה 6
+* **a.** PCA dimensionality reduction pseudocode ($d \to r$):
+  ```python
+  
+  ```
+* **b.** Reconstruction error minimization proof $\mathbf{z} = V^T \mathbf{x}$:
+  ```text
+  
+  ```
+* **c.** PCA pre-processing trade-offs for classification & $d=2, r=1$ geometric counter-example:
+  ```text
+  
+  ```

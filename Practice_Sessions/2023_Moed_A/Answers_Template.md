@@ -5,30 +5,82 @@
 
 ---
 
-## Question 1: MLE for 1D Gaussian Mean
-## שאלה 1: אומד סבירות מרבית (MLE) לתוחלת התפלגות נורמלית
+## 🔹 Part A: True/False Questions / חלק א': שאלות נכון/לא נכון
 
-*Derive steps 1, 2, and 3 for $\hat{\mu}_{\text{MLE}}$ / הציגי את שלבי ההוכחה לאומד הסבירות המרבית:*
+### Question 1: Generalization Gap / שאלה 1
+* **a.** [Yes / No] — *Reasoning / נימוק:*
+* **b.** [Yes / No] — *Reasoning / נימוק:*
+* **c.** [Yes / No] — *Reasoning / נימוק:*
+* **d.** [Yes / No] — *Reasoning / נימוק:*
 
-```text
-
-```
+### Question 2: Core Principles / שאלה 2
+* **a.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **b.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **c.** [Correct / Wrong] — *Reasoning / נימוק:*
+* **d.** [Correct / Wrong] — *Reasoning / נימוק:*
 
 ---
 
-## Question 2: Linear Regression & Ridge Regularization Duality
-## שאלה 2: רגרסיה לינארית ודואליות רגולריזציית Ridge
+## 🔹 Part B: Open Questions / חלק ב': שאלות פתוחות
 
-### Part A: Closed-Form OLS Derivation / סעיף א': פיתוח פתרון OLS במבנה סגור
-*Derive $\mathbf{w}^* = (X^T X)^{-1} X^T \mathbf{y}$ / הציגי גזירה של פונקציית ה-MSE במטריצות:*
+### Question 1: Linear Classifiers / שאלה 1
+* **a.** Perceptron pseudocode & convergence conditions:
+  ```python
+  
+  ```
+* **b.** Hinge Loss SGD algorithm, gradient derivation, & differences:
+  ```text
+  
+  ```
+* **c.** Perceptron / Hinge SGD with Momentum pseudocode:
+  ```python
+  
+  ```
 
-```text
+---
 
-```
+### Question 2: Large Margin & Sphere Classifier / שאלה 2
+* **a.** Soft-SVM constrained optimization formulation:
+  ```text
+  
+  ```
+* **b.** Margin $\rho$ definition & quadratic objective equivalence proof:
+  ```text
+  
+  ```
+* **c.** Sphere-classifier optimization problem formulation:
+  ```text
+  
+  ```
 
-### Part B: Ridge Matrix Invertibility Proof / סעיף ב': הוכחת הפיכות מטריצת Ridge
-*Prove $(X^T X + \lambda I_d)$ is strictly positive definite for $\lambda > 0$ / הוכיחי חיוביות ממש והפיכות:*
+---
 
-```text
+### Question 3: Non-Linear Classifiers & ConvNets / שאלה 3
+* **a.** Conv2D architecture details for RGB input:
+  ```text
+  
+  ```
+* **b.** KL-Divergence to Cross-Entropy equivalence proof for one-hot target:
+  ```text
+  
+  ```
+* **c. (i)-(ii)** Super-resolution architecture ($100\times100 \to 200\times200$) & training protocol:
+  ```text
+  
+  ```
 
-```
+---
+
+### Question 4: Unsupervised Learning & $K$-Means / שאלה 4
+* **a.** $K$-Means pseudocode:
+  ```python
+  
+  ```
+* **b.** $L_2$ distortion reduction convergence proof:
+  ```text
+  
+  ```
+* **c.** $L_1$ distance ($K$-Medians) algorithm & median update derivation:
+  ```python
+  
+  ```

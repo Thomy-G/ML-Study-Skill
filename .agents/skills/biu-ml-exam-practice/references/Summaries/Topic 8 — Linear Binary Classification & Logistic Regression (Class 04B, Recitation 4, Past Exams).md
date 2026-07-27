@@ -80,17 +80,22 @@ Using the functional margin notation, these two expressions can be combined into
 
 $$P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \sigma(y_i \mathbf{w}^T \mathbf{x}_i) = \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}}$$
 
-## 5. Maximum Likelihood & Cross-Entropy Loss (From 2023 Moed B)
+## 5. Maximum Likelihood & Binary NLL Loss (From 2023 Moed B)
 
 To find the optimal weight vector $\mathbf{w}$, we maximize the joint conditional likelihood across $n$ independent training observations:
 
 $$L(\mathbf{w}) = \prod_{i=1}^n P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \prod_{i=1}^n \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}}$$
 
-Maximizing this likelihood is mathematically equivalent to minimizing its negative log-likelihood. This defines the **Cross-Entropy (or Logistic) Loss** function:
+Maximizing this likelihood is mathematically equivalent to minimizing its **Negative Log-Likelihood (NLL)**, also known as **Binary Cross-Entropy (BCE)** or **Logistic Loss**:
 
-$$L_{\text{CE}}(\mathbf{w}) = -\sum_{i=1}^n \ln \left( \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \right) = \sum_{i=1}^n \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right)$$
+### A. Formulation for Labels $y_i \in \{-1, +1\}$:
+$$\mathcal{L}_{\text{NLL}}(\mathbf{w}) = -\ln L(\mathbf{w}) = -\sum_{i=1}^n \ln \left( \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \right) = \sum_{i=1}^n \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right)$$
 
-### The Rationale behind Cross-Entropy Loss
+### B. Equivalent Formulation for Labels $y_i \in \{0, 1\}$:
+Using predictions $\hat{y}_i = \sigma(\mathbf{w}^T \mathbf{x}_i) \in (0, 1)$:
+$$\mathcal{L}_{\text{NLL}}(\mathbf{w}) = -\sum_{i=1}^n \Big[ y_i \ln(\hat{y}_i) + (1 - y_i) \ln(1 - \hat{y}_i) \Big]$$
+
+### The Rationale behind Binary NLL Loss
 
 - **Differentiable and Convex:** Unlike the zero-one step function, Cross-Entropy is smooth and continuous everywhere, making it highly effective for gradient descent optimization.
     
