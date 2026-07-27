@@ -1,0 +1,251 @@
+{
+  "main": {
+    "id": "6be5bfaf4e4902e5",
+    "type": "split",
+    "children": [
+      {
+        "id": "47235db026cf52e2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1fe4891eb4255059",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Practice_Sessions/2025_Moed_A/Questions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Questions"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "47bdfd2585b9af73",
+    "type": "split",
+    "children": [
+      {
+        "id": "cab212b8c904c536",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b2e566a6335253e4",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "cc42d394b77b11cc",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "8774df2f57e50037",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f5759e191af32177",
+    "type": "split",
+    "children": [
+      {
+        "id": "1fb85d982ecaf8a6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a425729afeb1c6e9",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Answers_Template"
+            }
+          },
+          {
+            "id": "d78c5a836706da50",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Answers_Template"
+            }
+          },
+          {
+            "id": "04fabeb0d6f38468",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "13e7fb70a701fbf3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "75b2a8b5dfadaa8b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Answers_Template"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "floating": {
+    "id": "94f335c36e13c62c",
+    "type": "floating",
+    "children": [
+      {
+        "id": "341a022ebfb810c0",
+        "type": "window",
+        "children": [
+          {
+            "id": "58890af11af0e8e3",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "784a4d09bfbb692c",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Practice_Sessions/2025_Moed_A/Solutions.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Solutions"
+                }
+              },
+              {
+                "id": "c35f2b87e9ea343e",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Answers_Template"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "vertical",
+        "x": 2852,
+        "y": -1533,
+        "width": 1024,
+        "height": 761,
+        "maximize": true,
+        "zoom": 0
+      }
+    ]
+  },
+  "active": "c35f2b87e9ea343e",
+  "lastOpenFiles": [
+    "Practice_Sessions/2025_Moed_A/Questions.md",
+    "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+    "Practice_Sessions/2024_Moed_A_and_B/Questions.md",
+    "Practice_Sessions/2025_Moed_A/Solutions.md",
+    "Practice_Sessions/2025_Moed_B/Questions.md",
+    "Practice_Sessions/2022_Moed_A/Questions.md",
+    "Practice_Sessions/2022_Moed_A/Answers_Template.md",
+    "README.md"
+  ]
+}
