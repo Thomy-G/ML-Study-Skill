@@ -9,6 +9,7 @@
 
 ### Question 1: Transformers & Sequence Architectures / שאלה 1
 * **a.** [True / False] — *Reasoning / נימוק:*
+false, Self attention has a O($L\cdot d^{2}+L^{2}\cdot d$)
 * **b.** [True / False] — *Reasoning / נימוק:*
 * **c.** [True / False] — *Reasoning / נימוק:*
 * **d.** [True / False] — *Reasoning / נימוק:*

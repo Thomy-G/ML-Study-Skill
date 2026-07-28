@@ -91,6 +91,25 @@ $$K(\mathbf{x}_i, \mathbf{x}_j) = \phi(\mathbf{x}_i)^T \phi(\mathbf{x}_j)$$
 
 ---
 
+### 4.0 Inputs to Kernel Functions (Training vs. Inference)
+
+A kernel function $K(\mathbf{x}, \mathbf{z})$ takes **two feature vectors from the original input space** ($\mathbf{x}, \mathbf{z} \in \mathbb{R}^d$) and outputs a real scalar measuring their inner product in high-dimensional space:
+
+1. **During Model Training (The Gram Matrix $G_{ij}$):**  
+   * **Input 1 ($\mathbf{x}_i$):** Training sample $i \in \mathbb{R}^d$.  
+   * **Input 2 ($\mathbf{x}_j$):** Training sample $j \in \mathbb{R}^d$.  
+   * The kernel evaluates all pairwise similarities $G_{ij} = K(\mathbf{x}_i, \mathbf{x}_j)$ to build the $n \times n$ Gram Matrix used in the Wolfe Dual optimization problem.
+
+2. **During Inference / Prediction (Classifying a Test Point):**  
+   * **Input 1 ($\mathbf{x}_{\text{test}}$):** A new, unseen query test instance $\mathbf{x}_{\text{test}} \in \mathbb{R}^d$.  
+   * **Input 2 ($\mathbf{x}_i$):** A **Support Vector** ($\mathbf{x}_i \in \text{SV}$, where $\alpha_i > 0$).  
+   * The decision rule evaluates the kernel between the test instance and each support vector:  
+     $$f(\mathbf{x}_{\text{test}}) = \text{sign}\left( \sum_{i \in \text{SV}} \alpha_i y_i K(\mathbf{x}_i, \mathbf{x}_{\text{test}}) + b \right)$$
+
+*Key Advantage:* The inputs $\mathbf{x}$ and $\mathbf{z}$ remain in the original low-dimensional space $\mathbb{R}^d$. You **never** need to construct or evaluate high-dimensional vectors $\phi(\mathbf{x})$ directly.
+
+---
+
 ### 4.1 Mercer's Condition for Valid Kernels
 A continuous symmetric function $K(\mathbf{x}, \mathbf{z})$ is a valid kernel (i.e. corresponds to an inner product in some Hilbert space) if and only if for any finite set of points $\{\mathbf{x}_1, \dots, \mathbf{x}_n\}$, the **Gram Matrix** $G \in \mathbb{R}^{n \times n}$ defined by $G_{i,j} = K(\mathbf{x}_i, \mathbf{x}_j)$ is **Positive Semi-Definite (PSD)**:
 

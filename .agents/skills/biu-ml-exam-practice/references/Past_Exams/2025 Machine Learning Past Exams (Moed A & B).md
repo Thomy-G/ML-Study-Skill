@@ -26,7 +26,11 @@ Mark whether each statement below is **Correct (True)** or **Incorrect (False)**
 * **c.** BatchNorm makes training of deep networks converge faster.  
   * **Answer:** **Correct (True)**. Batch Normalization stabilizes layer activation distributions, smoothes the optimization loss landscape, and permits higher learning rates.
 * **d.** With SGD, Weight Decay has the equivalent effect of adding an $L_2$ regularization term to the loss function.  
-  * **Answer:** **Correct (True)**. For standard SGD, weight decay $w \leftarrow (1 - \eta \lambda)w - \eta \nabla L$ is algebraically identical to gradient descent on $L(w) + \frac{\lambda}{2}\|w\|^2$.
+  * **Answer:** **Correct (True)**. Under standard SGD, weight decay is algebraically identical to optimizing an $L_2$ regularized loss function $\mathcal{L}_{\text{reg}}(\mathbf{w}) = \mathcal{L}_0(\mathbf{w}) + \frac{\lambda}{2}\|\mathbf{w}\|^2$.  
+    *Proof*:
+    1. SGD on $L_2$ regularized loss: $\mathbf{w}_{t+1} = \mathbf{w}_t - \eta \nabla \mathcal{L}_{\text{reg}} = \mathbf{w}_t - \eta \left( \nabla \mathcal{L}_0 + \lambda \mathbf{w}_t \right) = (1 - \eta \lambda)\mathbf{w}_t - \eta \nabla \mathcal{L}_0$.
+    2. Weight decay update: $\mathbf{w}_{t+1} = (1 - \gamma)\mathbf{w}_t - \eta \nabla \mathcal{L}_0$.
+    Setting $\gamma = \eta \lambda$ yields **exact algebraic identity**.
 
 #### Question 2 (9 Points)
 Mark whether each statement below is **Correct (True)** or **Incorrect (False)**:
@@ -53,33 +57,44 @@ Consider training logistic regression models for two datasets $D_1, D_2$ with bi
   Differentiating $\nabla \text{Err}_{D_1}(w)$ w.r.t. $w$:
   $$\frac{\partial}{\partial w} \nabla \text{Err}_{D_1}(w) = \sum_{i=1}^{n_1} (x_i^{(1)})^2 \sigma'(w x_i^{(1)}) > 0$$
   Since $(x_i^{(1)})^2 \ge 0$ and $\sigma'(z) > 0$, the gradient is strictly monotonically increasing in $w$.
-* **d. Optimal Weight Interval Bounds:**
-  * **(i)** Additivity of gradients: $\nabla \text{Err}_{D_1 \cup D_2}(w^*) = \nabla \text{Err}_{D_1}(w^*) + \nabla \text{Err}_{D_2}(w^*)$.
-  * **(ii)** If $w^* < \min(w^{(1)}, w^{(2)})$, by monotonicity $\nabla \text{Err}_{D_1}(w^*) < \nabla \text{Err}_{D_1}(w^{(1)}) = 0$ and $\nabla \text{Err}_{D_2}(w^*) < 0 \implies \nabla \text{Err}_{D_1 \cup D_2}(w^*) < 0$, contradicting $\nabla \text{Err}_{D_1 \cup D_2}(w^*) = 0$.
-  * **(iii)** If $w^* > \max(w^{(1)}, w^{(2)})$, then $\nabla \text{Err}_{D_1 \cup D_2}(w^*) > 0$, contradiction. Thus, $\min(w^{(1)}, w^{(2)}) \le w^* \le \max(w^{(1)}, w^{(2)})$.
+* **d. Optimal Weight Interval Bounds Proofs:**
+  * **(i)** Additivity of gradients: $\text{Err}_{D_1 \cup D_2}(w) = \text{Err}_{D_1}(w) + \text{Err}_{D_2}(w) \implies \nabla \text{Err}_{D_1 \cup D_2}(w^*) = \nabla \text{Err}_{D_1}(w^*) + \nabla \text{Err}_{D_2}(w^*)$.
+  * **(ii)** By FOC, $\nabla \text{Err}_{D_1}(w^{(1)}) = 0$ and $\nabla \text{Err}_{D_2}(w^{(2)}) = 0$. If $w^* < \min(w^{(1)}, w^{(2)})$, strict monotonicity implies $\nabla \text{Err}_{D_1}(w^*) < \nabla \text{Err}_{D_1}(w^{(1)}) = 0$ and $\nabla \text{Err}_{D_2}(w^*) < \nabla \text{Err}_{D_2}(w^{(2)}) = 0 \implies \nabla \text{Err}_{D_1 \cup D_2}(w^*) = \nabla \text{Err}_{D_1}(w^*) + \nabla \text{Err}_{D_2}(w^*) < 0$.
+  * **(iii)** If $w^* > \max(w^{(1)}, w^{(2)})$, strict monotonicity implies $\nabla \text{Err}_{D_1}(w^*) > 0$ and $\nabla \text{Err}_{D_2}(w^*) > 0 \implies \nabla \text{Err}_{D_1 \cup D_2}(w^*) > 0$.
+  * **Conclusion**: Since $w^*$ minimizes $D_1 \cup D_2$, by FOC $\nabla \text{Err}_{D_1 \cup D_2}(w^*) = 0$. Since $w^* < \min$ yields negative gradient and $w^* > \max$ yields positive gradient, $w^*$ must lie bounded within $\min(w^{(1)}, w^{(2)}) \le w^* \le \max(w^{(1)}, w^{(2)})$.
 
 #### Question 4: Naïve Bayes
 Let $\mathbf{x} = (x_1, \dots, x_d) \in \mathbb{R}^d$ and $Y \in \{0, 1\}$ with prior $P(Y=1) = \pi_1, P(Y=0) = \pi_0$. Feature distributions are $P(x_j \mid Y=c) = \mathcal{N}(\mu_{c,j}, \sigma_j^2)$ with shared variance $\sigma_j^2$.
 * **a. Conditional Log-Likelihood:**
   $$\ln P(\mathbf{x} \mid Y=c) = \sum_{j=1}^d \left[ -\frac{1}{2}\ln(2\pi\sigma_j^2) - \frac{(x_j - \mu_{c,j})^2}{2\sigma_j^2} \right]$$
-* **b. Log-Posterior Ratio:**
-  $$\ln \frac{P(Y=1 \mid \mathbf{x})}{P(Y=0 \mid \mathbf{x})} = \ln \frac{\pi_1}{\pi_0} + \sum_{j=1}^d \frac{\mu_{1,j} - \mu_{0,j}}{\sigma_j^2} x_j + \sum_{j=1}^d \frac{\mu_{0,j}^2 - \mu_{1,j}^2}{2\sigma_j^2}$$
-* **c. Linear Classifier Equivalence & Decision Boundary:**
-  This matches $\mathbf{w}^T \mathbf{x} + b = 0$ where:
-  $$w_j = \frac{\mu_{1,j} - \mu_{0,j}}{\sigma_j^2}, \quad b = \ln \frac{\pi_1}{\pi_0} + \sum_{j=1}^d \frac{\mu_{0,j}^2 - \mu_{1,j}^2}{2\sigma_j^2}$$
-  Decision rule: Classify $Y=1$ if $\mathbf{w}^T \mathbf{x} + b > 0$, else $Y=0$.
+* **b. Log-Posterior Ratio (Step-by-Step Derivation):**
+  * Step 1 (Bayes' Rule): $\frac{P(Y=1 \mid \mathbf{x})}{P(Y=0 \mid \mathbf{x})} = \frac{\pi_1}{\pi_0} \cdot \frac{\prod_{j=1}^d P(x_j \mid Y=1)}{\prod_{j=1}^d P(x_j \mid Y=0)}$.
+  * Step 2 (Taking Log): $\ln \frac{P(Y=1 \mid \mathbf{x})}{P(Y=0 \mid \mathbf{x})} = \ln \frac{\pi_1}{\pi_0} + \sum_{j=1}^d \left[ \ln P(x_j \mid Y=1) - \ln P(x_j \mid Y=0) \right]$.
+  * Step 3 (Gaussian Log & Shared $\sigma_j^2$ Cancellation): $\ln P(x_j \mid Y=1) - \ln P(x_j \mid Y=0) = \frac{(x_j - \mu_{0,j})^2 - (x_j - \mu_{1,j})^2}{2\sigma_j^2}$.
+  * Step 4 (Difference of Squares & $x_j^2$ Cancellation): $(x_j - \mu_{0,j})^2 - (x_j - \mu_{1,j})^2 = 2x_j(\mu_{1,j} - \mu_{0,j}) + \mu_{0,j}^2 - \mu_{1,j}^2$.
+  * Step 5 (Final Formula):
+    $$\ln \frac{P(Y=1 \mid \mathbf{x})}{P(Y=0 \mid \mathbf{x})} = \ln \frac{\pi_1}{\pi_0} + \sum_{j=1}^d \frac{\mu_{1,j} - \mu_{0,j}}{\sigma_j^2} x_j + \sum_{j=1}^d \frac{\mu_{0,j}^2 - \mu_{1,j}^2}{2\sigma_j^2}$$
+* **c. Linear Classifier Equivalence & Parameter Selection Rationale:**
+  * **Linear Classifier Definition**: A classifier is linear if its decision score depends purely on a linear combination of input features $\mathbf{w}^T \mathbf{x} + b > 0$, without quadratic ($x_j^2$) or cross-feature terms.
+  * **Parameter Selection**: Equating Bayes optimal decision rule $\ln\left(\frac{P(Y=1 \mid \mathbf{x})}{P(Y=0 \mid \mathbf{x})}\right) > 0$ to $\mathbf{w}^T \mathbf{x} + b > 0$:
+    1. $w_j = \frac{\mu_{1,j} - \mu_{0,j}}{\sigma_j^2}$ (coefficient of feature $x_j$, measuring mean separation scaled by feature variance).
+    2. $b = \ln \frac{\pi_1}{\pi_0} + \sum_{j=1}^d \frac{\mu_{0,j}^2 - \mu_{1,j}^2}{2\sigma_j^2}$ (constant bias combining prior odds and squared mean shifts).
+  * **Decision Rule**: Classify $Y=1$ if $\mathbf{w}^T \mathbf{x} + b > 0$, else $Y=0$. Decision boundary is hyper-plane $\mathbf{w}^T \mathbf{x} + b = 0$.
 
 #### Question 5: $K$-Means & Expectation-Maximization (EM)
 * **a. Full Likelihood with Latent $z_{i,k}$:**
+  For 1-of-$K$ binary indicator vector $\mathbf{z}_i$:
   $$p_\theta(X, Z) = \prod_{i=1}^n \prod_{k=1}^K \left[ \pi_k \mathcal{N}(x_i; \mu_k, \Sigma_k) \right]^{z_{i,k}}$$
-* **b. Posterior Responsibilities & Limit $\sigma \to 0$:**
-  $$q(z_{i,k}=1) = \frac{\pi_k \mathcal{N}(x_i; \mu_k, \sigma^2 I)}{\sum_{l=1}^K \pi_l \mathcal{N}(x_i; \mu_l, \sigma^2 I)} = \frac{\exp\left(-\frac{\|x_i - \mu_k\|^2}{2\sigma^2}\right)}{\sum_{l=1}^K \exp\left(-\frac{\|x_i - \mu_l\|^2}{2\sigma^2}\right)}$$
-  As $\sigma \to 0$, $q(z_{i,k}=1) \to 1$ for $k = k_i^* = \arg\min_k \|x_i - \mu_k\|^2$ and $0$ otherwise.
+* **b. Posterior Responsibilities & Limit $\sigma \to 0$ Proof:**
+  For $\pi_k = 1/K$ and $\Sigma_k = \sigma^2 I$:
+  $$q(z_{i,k}=1) = \frac{\exp\left(-\frac{\|x_i - \mu_k\|^2}{2\sigma^2}\right)}{\sum_{l=1}^K \exp\left(-\frac{\|x_i - \mu_l\|^2}{2\sigma^2}\right)}$$
+  Dividing by $\exp\left(-\frac{\|x_i - \mu_{k^*}\|^2}{2\sigma^2}\right)$ where $k^* = \arg\min_l \|x_i - \mu_l\|^2$:
+  As $\sigma \to 0$, $e^{-\frac{\|x_i - \mu_l\|^2 - \|x_i - \mu_{k^*}\|^2}{2\sigma^2}} \to e^{-\infty} = 0$ for all $l \neq k^*$. Thus $q(z_{i,k^*}=1) \to 1$ and $q(z_{i,k}=1) \to 0$ for $k \neq k^*$.
 * **c. E-Step Equivalence to $K$-Means Step 1:**
-  Hard assignment in E-step assigns each point to its nearest cluster center $\mu_{k_i^*}$, identical to $K$-Means assignment.
-* **d. M-Step Equivalence to $K$-Means Step 2:**
-  $$\mu_k^{\text{new}} = \frac{\sum_{i=1}^n q(z_{i,k}=1) x_i}{\sum_{i=1}^n q(z_{i,k}=1)} = \frac{1}{|C_k|} \sum_{i \in C_k} x_i$$
-  which is the arithmetic mean of points in cluster $k$, matching $K$-Means centroid update.
+  As $\sigma \to 0$, $q(z_{i,k}=1) = \mathbb{I}\{k = \arg\min_l \|x_i - \mu_l\|^2\}$, which is identical to Step 1 of $K$-Means (hard nearest-centroid assignment).
+* **d. M-Step Equivalence & Algorithmic Identity:**
+  $$\mu_k^{\text{new}} = \frac{\sum_{i=1}^n q(z_{i,k}=1) x_i}{\sum_{i=1}^n q(z_{i,k}=1)} = \frac{\sum_{i \in S_k} x_i}{|S_k|}$$
+  which is exact Step 2 of $K$-Means (re-estimating centroid as arithmetic mean of assigned points). Thus EM for GMM in the limit $\sigma \to 0$ is mathematically identical to $K$-Means clustering! $\quad \blacksquare$
 
 ---
 

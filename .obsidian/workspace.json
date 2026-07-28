@@ -13,21 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Practice_Sessions/2025_Moed_A/Questions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Questions"
-            }
-          },
-          {
-            "id": "ae845477691e99e6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Practice_Sessions/2023_Moed_B/Questions.md",
+                "file": "Practice_Sessions/Transformers_and_Rare_Topics/Questions.md",
                 "mode": "source",
                 "source": false
               },
@@ -35,8 +21,7 @@
               "title": "Questions"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -93,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "f5759e191af32177",
@@ -109,7 +95,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Practice_Sessions/2023_Moed_B/Answers_Template.md",
+                "file": "Practice_Sessions/Transformers_and_Rare_Topics/Answers_Template.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -128,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Practice_Sessions/2023_Moed_B/Answers_Template.md",
+                "file": "Practice_Sessions/Transformers_and_Rare_Topics/Answers_Template.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -171,7 +157,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Practice_Sessions/2023_Moed_B/Answers_Template.md",
+                "file": "Practice_Sessions/Transformers_and_Rare_Topics/Answers_Template.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -211,49 +197,34 @@
             "type": "tabs",
             "children": [
               {
-                "id": "784a4d09bfbb692c",
+                "id": "b5ab1f3804866871",
                 "type": "leaf",
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "Practice_Sessions/2025_Moed_A/Solutions.md",
+                    "file": "Practice_Sessions/Transformers_and_Rare_Topics/Answers_Template.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Answers_Template"
+                }
+              },
+              {
+                "id": "48c21973c4ba8745",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Practice_Sessions/Transformers_and_Rare_Topics/Solutions.md",
                     "mode": "source",
                     "source": false
                   },
                   "icon": "lucide-file",
                   "title": "Solutions"
                 }
-              },
-              {
-                "id": "c35f2b87e9ea343e",
-                "type": "leaf",
-                "state": {
-                  "type": "markdown",
-                  "state": {
-                    "file": "Practice_Sessions/2025_Moed_A/Answers_Template.md",
-                    "mode": "source",
-                    "source": false
-                  },
-                  "icon": "lucide-file",
-                  "title": "Answers_Template"
-                }
-              },
-              {
-                "id": "c401c4ed9f5b4868",
-                "type": "leaf",
-                "state": {
-                  "type": "markdown",
-                  "state": {
-                    "file": "Practice_Sessions/2023_Moed_B/Answers_Template.md",
-                    "mode": "source",
-                    "source": false
-                  },
-                  "icon": "lucide-file",
-                  "title": "Answers_Template"
-                }
               }
-            ],
-            "currentTab": 2
+            ]
           }
         ],
         "direction": "vertical",
@@ -266,20 +237,29 @@
       }
     ]
   },
-  "active": "c401c4ed9f5b4868",
+  "active": "b5ab1f3804866871",
   "lastOpenFiles": [
-    "Practice_Sessions/2023_Moed_B/Questions.md",
+    "Practice_Sessions/Transformers_and_Rare_Topics/Questions.md",
+    "Practice_Sessions/Transformers_and_Rare_Topics/Answers_Template.md",
+    "Practice_Sessions/2025_Moed_A/Answers_Template.md",
+    "Practice_Sessions/2025_Moed_A/Solutions.md",
+    "Practice_Sessions/Transformers_and_Rare_Topics/Solutions.md",
+    "Practice_Sessions/2025_Moed_A/Questions.md",
+    "Practice_Sessions/True_False_Drill_Session/Solutions.md",
+    "Practice_Sessions/True_False_Drill_Session/Answers_Template.md",
+    "Practice_Sessions/True_False_Drill_Session/Questions.md",
+    "Practice_Sessions/True_False_Drill_Session",
+    "Practice_Sessions/Transformers_and_Rare_Topics",
     "Practice_Sessions/2023_Moed_B/Answers_Template.md",
+    "Practice_Sessions/2023_Moed_B/Solutions.md",
+    "Practice_Sessions/2023_Moed_B/Questions.md",
     "090 System/Latex/latex-suite-snippets.js",
     "090 System/Latex",
     "090 System",
-    "Practice_Sessions/2025_Moed_A/Answers_Template.md",
     "Practice_Sessions/2023_Moed_A/Solutions.md",
     "Practice_Sessions/2023_Moed_A/Questions.md",
-    "Practice_Sessions/2025_Moed_A/Questions.md",
     "LICENSE",
     "Practice_Sessions/2024_Moed_A_and_B/Questions.md",
-    "Practice_Sessions/2025_Moed_A/Solutions.md",
     "Practice_Sessions/2025_Moed_B/Questions.md",
     "Practice_Sessions/2022_Moed_A/Questions.md",
     "Practice_Sessions/2022_Moed_A/Answers_Template.md",

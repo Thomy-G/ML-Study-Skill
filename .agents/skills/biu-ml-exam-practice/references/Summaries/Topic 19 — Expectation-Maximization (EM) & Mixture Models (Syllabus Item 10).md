@@ -56,37 +56,100 @@ To resolve this, we introduce hidden binary indicator variables $\mathbf{z}_i = 
 
 $$P(\mathcal{D}, Z \mid \boldsymbol{\theta}) = \prod_{i=1}^n \prod_{k=1}^K \Big[ \pi_k \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k, \Sigma_k) \Big]^{z_{i,k}}$$
 
+> 💡 **Intuitive Step-by-Step Breakdown of How This Works:**
+> 
+> 1. **Why standard log-likelihood is hard:** When we only observe $\mathbf{x}_i$, the density is $P(\mathbf{x}_i) = \sum_{k=1}^K \pi_k \mathcal{N}_k$. Taking $\ln\left(\sum_{k=1}^K \dots\right)$ traps the sum *inside* the logarithm, preventing us from breaking the expression into simple linear terms.
+> 2. **The One-Hot Binary Indicator ($\mathbf{z}_i$):** If we knew the true generating cluster $k$, $\mathbf{z}_i$ would be a one-hot vector where $z_{i,k} = 1$ for the true cluster and $z_{i,j} = 0$ for all other $j \neq k$.
+> 3. **The Product Exponentiation Trick ($\prod [A_k]^{z_{i,k}}$):**
+>    * For the single active cluster ($z_{i,k} = 1$), $[A_k]^1 = A_k$.
+>    * For all inactive clusters ($z_{i,j} = 0$), $[A_j]^0 = 1$.
+>    * Multiplying them together isolates the active component without any addition ($\sum$) inside!
+> 4. **Pulling the Sum OUTSIDE the Logarithm:** Taking the logarithm converts the product into a clean linear sum:
+>    $$\ln P(\mathcal{D}, Z \mid \boldsymbol{\theta}) = \sum_{i=1}^n \sum_{k=1}^K z_{i,k} \Big[ \ln \pi_k + \ln \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k, \Sigma_k) \Big]$$
+>    Since $\ln \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k, \Sigma_k)$ cancels out the exponential $e^{(\dots)}$, differentiating with respect to $\boldsymbol{\mu}_k$ or $\Sigma_k$ becomes simple and linear!
+
 Taking the natural logarithm transforms the product into a manageable linear summation:
 
 $$\ln P(\mathcal{D}, Z \mid \boldsymbol{\theta}) = \sum_{i=1}^n \sum_{k=1}^K z_{i,k} \Big[ \ln \pi_k + \ln \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k, \Sigma_k) \Big]$$
 
-## 4. The EM Optimization Protocol
+## 4. The General Expectation-Maximization (EM) Framework
 
-Since the true values of the latent indicators $z_{i,k}$ are hidden, we cannot optimize this complete log-likelihood directly. The EM algorithm iteratively maximizes the **expected value of the complete log-likelihood** relative to the conditional distribution of $Z$ given the current parameter state $\boldsymbol{\theta}^{(t)}$.
+The EM algorithm (Dempster, Laird, & Rubin, 1977) optimizes models with latent variables by constructing and maximizing an auxiliary lower-bound function called the **$Q$-Function**.
 
-### Step 1: The Expectation Step (E-Step)
+---
 
-Calculate the conditional expectation of the hidden indicator variables $z_{i,k}$ given the observed data and our current parameter estimates. This value, called the **responsibility** ($\gamma_{i,k}$), represents the soft probability that component $k$ generated sample $i$.
+### 4.1 The $Q$-Function (Expected Complete Log-Likelihood)
 
-Applying Bayes' Rule (**2025 Moed A**):
+At iteration step $t$, given current parameter estimates $\boldsymbol{\theta}^{(t)}$, the **$Q$-function** is defined as the expected value of the complete log-likelihood taken with respect to the conditional posterior distribution of the latent variables $Z$ given observed data $\mathcal{D}$:
 
-$$\gamma_{i,k}^{(t)} = \mathbb{E}[z_{i,k} \mid \mathbf{x}_i, \boldsymbol{\theta}^{(t)}] = P(z_{i,k} = 1 \mid \mathbf{x}_i, \boldsymbol{\theta}^{(t)}) = \frac{\pi_k^{(t)} \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k^{(t)}, \Sigma_k^{(t)})}{\sum_{j=1}^K \pi_j^{(t)} \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_j^{(t)}, \Sigma_j^{(t)})}$$
+$$Q(\boldsymbol{\theta}, \boldsymbol{\theta}^{(t)}) = \mathbb{E}_{Z \mid \mathcal{D}, \boldsymbol{\theta}^{(t)}} \left[ \ln P(\mathcal{D}, Z \mid \boldsymbol{\theta}) \right]$$
 
-### Step 2: The Maximization Step (M-Step)
+Expanding for a mixture model with responsibilities $\gamma_{i,k}^{(t)} = \mathbb{E}[z_{i,k} \mid \mathbf{x}_i, \boldsymbol{\theta}^{(t)}]$:
 
-Update the parameters $\boldsymbol{\theta}$ to maximize the expected complete log-likelihood computed in the E-step. Taking partial derivatives and solving yields the updated parameters:
+$$Q(\boldsymbol{\theta}, \boldsymbol{\theta}^{(t)}) = \sum_{i=1}^n \sum_{k=1}^K \gamma_{i,k}^{(t)} \left[ \ln \pi_k + \ln P(\mathbf{x}_i \mid \boldsymbol{\theta}_k) \right]$$
 
-1. **Updated Mixing Prior Weights:**
-    
-    $$\pi_k^{(t+1)} = \frac{1}{n} \sum_{i=1}^n \gamma_{i,k}^{(t)}$$
-    
-2. **Updated Centroid Mean Vectors:**
-    
-    $$\boldsymbol{\mu}_k^{(t+1)} = \frac{\sum_{i=1}^n \gamma_{i,k}^{(t)} \mathbf{x}_i}{\sum_{i=1}^n \gamma_{i,k}^{(t)}}$$
-    
-3. **Updated Covariance Matrices:**
-    
-    $$\Sigma_k^{(t+1)} = \frac{\sum_{i=1}^n \gamma_{i,k}^{(t)} (\mathbf{x}_i - \boldsymbol{\mu}_k^{(t+1)})(\mathbf{x}_i - \boldsymbol{\mu}_k^{(t+1)})^T}{\sum_{i=1}^n \gamma_{i,k}^{(t)}}$$
+---
+
+### 4.2 Step 1: The Expectation Step (E-Step)
+
+Compute the **responsibilities** $\gamma_{i,k}^{(t)}$—the posterior probability that latent component $k$ generated observed data point $\mathbf{x}_i$:
+
+$$\gamma_{i,k}^{(t)} = P(z_{i,k} = 1 \mid \mathbf{x}_i, \boldsymbol{\theta}^{(t)}) = \frac{\pi_k^{(t)} \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_k^{(t)}, \Sigma_k^{(t)})}{\sum_{j=1}^K \pi_j^{(t)} \mathcal{N}(\mathbf{x}_i \mid \boldsymbol{\mu}_j^{(t)}, \Sigma_j^{(t)})}$$
+
+Define the **effective number of data points** assigned to cluster $k$:
+
+$$N_k = \sum_{i=1}^n \gamma_{i,k}^{(t)}$$
+
+---
+
+### 4.3 Step 2: The Maximization Step (M-Step) Analytical Derivations
+
+Find new parameters $\boldsymbol{\theta}^{(t+1)} = \arg\max_{\boldsymbol{\theta}} Q(\boldsymbol{\theta}, \boldsymbol{\theta}^{(t)})$.
+
+#### 1. Derivation of Mixture Weights $\pi_k$ (using Lagrange Multipliers)
+We maximize $\sum_{k=1}^K N_k \ln \pi_k$ subject to the normalization constraint $\sum_{k=1}^K \pi_k = 1$:
+
+$$\mathcal{L}_{\text{Lagrange}}(\boldsymbol{\pi}, \lambda) = \sum_{k=1}^K N_k \ln \pi_k + \lambda \left( 1 - \sum_{k=1}^K \pi_k \right)$$
+
+Taking the partial derivative with respect to $\pi_k$ and setting to zero:
+
+$$\frac{\partial \mathcal{L}_{\text{Lagrange}}}{\partial \pi_k} = \frac{N_k}{\pi_k} - \lambda = 0 \implies N_k = \lambda \pi_k$$
+
+Summing both sides over all $K$ components:
+
+$$\sum_{k=1}^K N_k = \lambda \sum_{k=1}^K \pi_k \implies n = \lambda \cdot 1 \implies \lambda = n$$
+
+Substituting $\lambda = n$ back into the weight expression yields the exact M-step update:
+
+$$\pi_k^{(t+1)} = \frac{N_k}{n} = \frac{1}{n} \sum_{i=1}^n \gamma_{i,k}^{(t)}$$
+
+#### 2. Derivation of Means $\boldsymbol{\mu}_k$
+Differentiating $Q(\boldsymbol{\theta}, \boldsymbol{\theta}^{(t)})$ with respect to $\boldsymbol{\mu}_k$:
+
+$$\frac{\partial Q}{\partial \boldsymbol{\mu}_k} = \sum_{i=1}^n \gamma_{i,k}^{(t)} \nabla_{\boldsymbol{\mu}_k} \left[ -\frac{1}{2}(\mathbf{x}_i - \boldsymbol{\mu}_k)^T \Sigma_k^{-1} (\mathbf{x}_i - \boldsymbol{\mu}_k) \right] = \sum_{i=1}^n \gamma_{i,k}^{(t)} \Sigma_k^{-1} (\mathbf{x}_i - \boldsymbol{\mu}_k) = \mathbf{0}$$
+
+Multiplying by $\Sigma_k$ and expanding:
+
+$$\sum_{i=1}^n \gamma_{i,k}^{(t)} \mathbf{x}_i - \left(\sum_{i=1}^n \gamma_{i,k}^{(t)}\right) \boldsymbol{\mu}_k = \mathbf{0} \implies \boldsymbol{\mu}_k^{(t+1)} = \frac{\sum_{i=1}^n \gamma_{i,k}^{(t)} \mathbf{x}_i}{\sum_{i=1}^n \gamma_{i,k}^{(t)}} = \frac{1}{N_k} \sum_{i=1}^n \gamma_{i,k}^{(t)} \mathbf{x}_i$$
+
+#### 3. Updated Covariance Matrix $\Sigma_k^{(t+1)}$:
+
+$$\Sigma_k^{(t+1)} = \frac{1}{N_k} \sum_{i=1}^n \gamma_{i,k}^{(t)} (\mathbf{x}_i - \boldsymbol{\mu}_k^{(t+1)})(\mathbf{x}_i - \boldsymbol{\mu}_k^{(t+1)})^T$$
+
+---
+
+### 4.4 The Evidence Lower Bound (ELBO) & Jensen's Inequality Interpretation
+
+The EM algorithm can be interpreted as coordinate ascent on the **Evidence Lower Bound (ELBO)** $F(q, \boldsymbol{\theta})$ using Jensen's Inequality:
+
+$$\ln P(\mathcal{D} \mid \boldsymbol{\theta}) = \ln \sum_{Z} P(\mathcal{D}, Z \mid \boldsymbol{\theta}) = \ln \sum_{Z} q(Z) \frac{P(\mathcal{D}, Z \mid \boldsymbol{\theta})}{q(Z)}$$
+
+Applying **Jensen's Inequality** ($\ln \mathbb{E}[U] \ge \mathbb{E}[\ln U]$):
+
+$$\ln P(\mathcal{D} \mid \boldsymbol{\theta}) \ge \sum_{Z} q(Z) \ln \frac{P(\mathcal{D}, Z \mid \boldsymbol{\theta})}{q(Z)} = \mathbb{E}_q[\ln P(\mathcal{D}, Z \mid \boldsymbol{\theta})] + \mathcal{H}(q) = F(q, \boldsymbol{\theta})$$
+
+*   **E-Step:** Fix $\boldsymbol{\theta}^{(t)}$ and maximize $F(q, \boldsymbol{\theta}^{(t)})$ with respect to distribution $q(Z)$. The maximum occurs when $q(Z) = P(Z \mid \mathcal{D}, \boldsymbol{\theta}^{(t)})$, closing the gap ($\text{KL}(q \parallel P) = 0$).
+*   **M-Step:** Fix $q(Z)$ and maximize $F(q, \boldsymbol{\theta})$ with respect to parameters $\boldsymbol{\theta}$. This guarantees that the true data log-likelihood never decreases ($\ln P(\mathcal{D} \mid \boldsymbol{\theta}^{(t+1)}) \ge \ln P(\mathcal{D} \mid \boldsymbol{\theta}^{(t)})$).
     
 
 ## 5. Python / NumPy Implementation Snippet

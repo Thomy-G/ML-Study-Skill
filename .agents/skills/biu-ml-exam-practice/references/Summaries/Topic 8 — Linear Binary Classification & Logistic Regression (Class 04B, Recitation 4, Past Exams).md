@@ -82,18 +82,62 @@ $$P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \sigma(y_i \mathbf{w}^T \mathbf{x}_i) =
 
 ## 5. Maximum Likelihood & Binary NLL Loss (From 2023 Moed B)
 
-To find the optimal weight vector $\mathbf{w}$, we maximize the joint conditional likelihood across $n$ independent training observations:
+### 5.1 Formulation A: Labels $y_i \in \{-1, +1\}$ (Functional Margin Form)
 
-$$L(\mathbf{w}) = \prod_{i=1}^n P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \prod_{i=1}^n \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}}$$
+1. **Conditional Probability Setup:**
+   For $y_i \in \{-1, +1\}$, the probability of the true label given input $\mathbf{x}_i$ is defined using the functional margin $y_i \mathbf{w}^T \mathbf{x}_i$:
+   $$P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \sigma(y_i \mathbf{w}^T \mathbf{x}_i) = \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}}$$
 
-Maximizing this likelihood is mathematically equivalent to minimizing its **Negative Log-Likelihood (NLL)**, also known as **Binary Cross-Entropy (BCE)** or **Logistic Loss**:
+2. **Joint Conditional Likelihood Function:**
+   Assuming data observations are sampled i.i.d.:
+   $$L(\mathbf{w}) = \prod_{i=1}^n P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \prod_{i=1}^n \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}}$$
 
-### A. Formulation for Labels $y_i \in \{-1, +1\}$:
-$$\mathcal{L}_{\text{NLL}}(\mathbf{w}) = -\ln L(\mathbf{w}) = -\sum_{i=1}^n \ln \left( \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \right) = \sum_{i=1}^n \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right)$$
+3. **Negative Log-Likelihood (NLL) Derivation:**
+   Taking the negative natural logarithm of $L(\mathbf{w})$:
+   $$\mathcal{L}_{\text{NLL}}^{(A)}(\mathbf{w}) = -\ln L(\mathbf{w}) = -\sum_{i=1}^n \ln \left( \frac{1}{1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i}} \right)$$
+   Using the logarithm quotient identity $-\ln(1/u) = \ln(u)$:
+   $$\mathcal{L}_{\text{NLL}}^{(A)}(\mathbf{w}) = \sum_{i=1}^n \ln \left( 1 + e^{-y_i \mathbf{w}^T \mathbf{x}_i} \right)$$
 
-### B. Equivalent Formulation for Labels $y_i \in \{0, 1\}$:
-Using predictions $\hat{y}_i = \sigma(\mathbf{w}^T \mathbf{x}_i) \in (0, 1)$:
-$$\mathcal{L}_{\text{NLL}}(\mathbf{w}) = -\sum_{i=1}^n \Big[ y_i \ln(\hat{y}_i) + (1 - y_i) \ln(1 - \hat{y}_i) \Big]$$
+---
+
+### 5.2 Formulation B: Labels $y_i \in \{0, 1\}$ (Bernoulli Cross-Entropy Form)
+
+1. **Conditional Probability Setup:**
+   For binary indicator targets $y_i \in \{0, 1\}$, let $\hat{y}_i = \sigma(\mathbf{w}^T \mathbf{x}_i) = \frac{1}{1 + e^{-\mathbf{w}^T \mathbf{x}_i}}$ represent the predicted probability $P(y_i = 1 \mid \mathbf{x}_i)$.
+   The conditional probability mass function for a single Bernoulli trial is:
+   $$P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \hat{y}_i^{y_i} (1 - \hat{y}_i)^{1 - y_i}$$
+
+2. **Joint Conditional Likelihood Function:**
+   $$L(\mathbf{w}) = \prod_{i=1}^n P(y_i \mid \mathbf{x}_i; \mathbf{w}) = \prod_{i=1}^n \hat{y}_i^{y_i} (1 - \hat{y}_i)^{1 - y_i}$$
+
+3. **Negative Log-Likelihood (NLL / Binary Cross-Entropy) Derivation:**
+   Taking the negative natural logarithm:
+   $$\mathcal{L}_{\text{NLL}}^{(B)}(\mathbf{w}) = -\ln L(\mathbf{w}) = -\ln \left( \prod_{i=1}^n \hat{y}_i^{y_i} (1 - \hat{y}_i)^{1 - y_i} \right)$$
+   Converting product to sum via logarithm power rules $\ln(a^b) = b \ln a$:
+   $$\mathcal{L}_{\text{NLL}}^{(B)}(\mathbf{w}) = -\sum_{i=1}^n \Big[ y_i \ln(\hat{y}_i) + (1 - y_i) \ln(1 - \hat{y}_i) \Big]$$
+
+---
+
+### 🧮 5.3 Step-by-Step Proof of Mathematical Equivalence
+
+We prove analytically that Formulation B ($y_i \in \{0, 1\}$) reduces identically to Formulation A ($y_i \in \{-1, +1\}$).
+
+Let $z_i = \mathbf{w}^T \mathbf{x}_i$, so $\hat{y}_i = \sigma(z_i) = \frac{1}{1 + e^{-z_i}}$ and $1 - \hat{y}_i = 1 - \frac{1}{1 + e^{-z_i}} = \frac{e^{-z_i}}{1 + e^{-z_i}} = \frac{1}{1 + e^{z_i}} = \sigma(-z_i)$.
+
+1. **Evaluate Single Instance Loss in Formulation B:**
+   $$\ell_i^{(B)} = -\left[ y_i \ln(\hat{y}_i) + (1 - y_i) \ln(1 - \hat{y}_i) \right]$$
+
+2. **Case 1: When $y_i = 1$ (Corresponding to $+1$ in Formulation A):**
+   * Formulation B: $\ell_i^{(B)} = -\ln(\hat{y}_i) = -\ln\left(\frac{1}{1 + e^{-z_i}}\right) = \ln(1 + e^{-z_i})$.
+   * Formulation A with $y_i = +1$: $\ell_i^{(A)} = \ln(1 + e^{-(+1)z_i}) = \ln(1 + e^{-z_i})$.
+   * Result: $\ell_i^{(B)} = \ell_i^{(A)} = \ln(1 + e^{-z_i})$.
+
+3. **Case 2: When $y_i = 0$ (Corresponding to $-1$ in Formulation A):**
+   * Formulation B: $\ell_i^{(B)} = -\ln(1 - \hat{y}_i) = -\ln\left(\frac{1}{1 + e^{z_i}}\right) = \ln(1 + e^{z_i})$.
+   * Formulation A with $y_i = -1$: $\ell_i^{(A)} = \ln(1 + e^{-(-1)z_i}) = \ln(1 + e^{z_i})$.
+   * Result: $\ell_i^{(B)} = \ell_i^{(A)} = \ln(1 + e^{z_i})$.
+
+**Conclusion:** For every sample observation $i$, $\ell_i^{(A)} \equiv \ell_i^{(B)}$, proving that **both formulations are mathematically identical**.
 
 ### The Rationale behind Binary NLL Loss
 

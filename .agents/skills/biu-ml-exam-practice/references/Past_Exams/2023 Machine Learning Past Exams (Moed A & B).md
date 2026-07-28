@@ -110,9 +110,17 @@ After training a deep network model, you observe that the test error is much lar
 #### Question 5: Deep Networks & Multi-Output Architecture
 * **a. 1-Hidden-Layer MLP Forward Pass:**
   $\mathbf{h} = g_1(W_1^T \mathbf{x}) \in \mathbb{R}^k, \quad \hat{y} = \mathbf{w}_2^T \mathbf{h} \in \mathbb{R}, \quad l = \frac{1}{2}(\hat{y} - y)^2$.
-* **b. Derivatives & SGD Weight Updates:**
-  $\frac{\partial l}{\partial \mathbf{w}_2} = (\hat{y} - y)\mathbf{h}$. $\frac{\partial l}{\partial W_1} = \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \right]^T$.
-  Updates: $\mathbf{w}_2 \leftarrow \mathbf{w}_2 - \eta \frac{\partial l}{\partial \mathbf{w}_2}$, $W_1 \leftarrow W_1 - \eta \frac{\partial l}{\partial W_1}$.
+* **b. Chain Rule Derivatives & SGD Weight Updates:**
+  * **Output Layer Weight Gradient $\frac{\partial l}{\partial \mathbf{w}_2}$**:
+    Chain rule over components $w_{2, j}$: $\frac{\partial l}{\partial w_{2, j}} = \frac{\partial l}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial w_{2, j}} = (\hat{y} - y) h_j \implies \frac{\partial l}{\partial \mathbf{w}_2} = (\hat{y} - y) \mathbf{h} = \delta_{\text{out}} \mathbf{h} \in \mathbb{R}^k$.
+  * **Hidden Layer Weight Matrix Gradient $\frac{\partial l}{\partial W_1}$**:
+    Chain rule over element $W_{1, m, j}$ connecting input feature $x_m$ to hidden neuron $j$:
+    $$\frac{\partial l}{\partial W_{1, m, j}} = \frac{\partial l}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial h_j} \cdot \frac{\partial h_j}{\partial z_j^{(1)}} \cdot \frac{\partial z_j^{(1)}}{\partial W_{1, m, j}} = (\hat{y} - y) \cdot w_{2, j} \cdot g_1'(z_j^{(1)}) \cdot x_m$$
+    Backpropagated hidden error vector $\boldsymbol{\delta}^{(1)} = (\hat{y} - y) \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \in \mathbb{R}^k$.  
+    Outer product matrix representation:
+    $$\frac{\partial l}{\partial W_1} = \mathbf{x} (\boldsymbol{\delta}^{(1)})^T = \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2 \odot g_1'(W_1^T \mathbf{x}) \right]^T \in \mathbb{R}^{d \times k}$$
+  * **SGD Updates**:
+    $$\mathbf{w}_2^{(t+1)} = \mathbf{w}_2^{(t)} - \eta (\hat{y} - y) \mathbf{h}, \quad W_1^{(t+1)} = W_1^{(t)} - \eta \mathbf{x} \left[ (\hat{y} - y) \mathbf{w}_2^{(t)} \odot g_1'(W_1^{(t)T} \mathbf{x}) \right]^T$$
 * **c. Multi-Task MLP ($y_1 \in \mathbb{R}, y_2 \in \{+1, -1\}$):**
   Shared hidden layer $\mathbf{h} = g_1(W_1^T \mathbf{x})$. Output 1 (regression): $\hat{y}_1 = \mathbf{w}_{out1}^T \mathbf{h}$. Output 2 (classification): $\hat{y}_2 = \sigma(\mathbf{w}_{out2}^T \mathbf{h})$. Loss $L_{total} = L_{MSE}(\hat{y}_1, y_1) + L_{BCE}(\hat{y}_2, y_2)$.
 
